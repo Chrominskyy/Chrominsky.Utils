@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chrominsky.Utils", "Chrominsky.Utils\Chrominsky.Utils.csproj", "{64117A06-FE9E-4282-99CA-199B1D20321D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{64117A06-FE9E-4282-99CA-199B1D20321D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64117A06-FE9E-4282-99CA-199B1D20321D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64117A06-FE9E-4282-99CA-199B1D20321D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64117A06-FE9E-4282-99CA-199B1D20321D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
