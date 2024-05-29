@@ -21,4 +21,4 @@ jobs:
     - name: Pack
       run: dotnet pack --configuration Release --no-build
     - name: Publish
-      run: dotnet nuget push bin/Release/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+      run: dotnet nuget push Chrominsky.Utils/bin/Release/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
