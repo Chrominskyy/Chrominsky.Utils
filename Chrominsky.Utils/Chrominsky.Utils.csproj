@@ -5,10 +5,11 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <PackageId>Chrominsky.Utils</PackageId>
-        <Version>1.0.1</Version>
+        <Version>1.0.2</Version>
         <Authors>Bartosz Chrominski</Authors>
-        <Description>Simple util toolkit for myself.</Description>
-        <PackageReleaseNotes>Will be included in changelog.</PackageReleaseNotes>
+        <Description>GitHub url: https://github.com/Chrominskyy/Chrominsky.Utils</Description>
+        <PackageReleaseNotes>https://github.com/Chrominskyy/Chrominsky.Utils/blob/main/Chrominsky.Utils/CHANGELOG.md</PackageReleaseNotes>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
 
     <ItemGroup>
@@ -19,9 +20,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="..\README.md">
+      <Content Include="..\README.md" Pack="true" PackagePath="\">
         <Link>README.md</Link>
       </Content>
     </ItemGroup>
-
 </Project>

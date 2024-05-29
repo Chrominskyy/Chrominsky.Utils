@@ -2,12 +2,16 @@
 <package >
   <metadata>
     <id>Chrominsky.Utils</id>
-    <version>1.0.0</version>
+    <version>1.0.2</version>
     <authors>Bartosz Chrominski</authors>
     <owners>Bartosz Chrominski</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Simple util toolkit for myself</description>
-    <releaseNotes>Will be included in changelog</releaseNotes>
+    <description>GitHub url: https://github.com/Chrominskyy/Chrominsky.Utils</description>
+    <releaseNotes>https://github.com/Chrominskyy/Chrominsky.Utils/blob/main/Chrominsky.Utils/CHANGELOG.md</releaseNotes>
     <copyright>Free for use, I don't care.</copyright>
+    <readme>README.md</readme>
   </metadata>
+  <files>
+    <file src="..\README.md" target="\" />
+  </files>
 </package>
