@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Chrominsky.Utils</id>
+    <version>1.0.0</version>
+    <authors>Bartosz Chrominski</authors>
+    <owners>Bartosz Chrominski</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Simple util toolkit for myself</description>
+    <releaseNotes>Will be included in changelog</releaseNotes>
+    <copyright>Free for use, I don't care.</copyright>
+  </metadata>
+</package>
