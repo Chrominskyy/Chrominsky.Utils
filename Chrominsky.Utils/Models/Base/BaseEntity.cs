@@ -1,4 +1,6 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
+using Chrominsky.Utils.Enums;
 using Newtonsoft.Json;
 
 namespace Chrominsky.Utils.Models.Base;
@@ -48,5 +50,7 @@ public abstract class BaseEntity
     /// Indicates whether the entity has been deleted.
     /// </summary>
     [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
-    public bool? IsDeleted { get; set; }
+    [Required]
+    [Newtonsoft.Json.JsonConverter(typeof(JsonStringEnumConverter))]
+    public DatabaseEntityStatus? Status { get; set; }
 }

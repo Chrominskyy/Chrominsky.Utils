@@ -6,13 +6,8 @@ using Newtonsoft.Json;
 
 namespace Chrominsky.Utils.Models.Base;
 
-/// <summary>
-/// Represents a base class for database entities.
-/// </summary>
-public abstract class BaseDatabaseEntity : IBaseDatabaseEntity
+public class BaseSimpleEntity : IBaseDatabaseEntity
 {
-    /// <inheritdoc />
-    [Required]
     public Guid Id { get; set; }
 
     /// <inheritdoc />

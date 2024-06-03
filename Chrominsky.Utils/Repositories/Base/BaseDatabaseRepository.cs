@@ -1,4 +1,5 @@
-using Chrominsky.Utils.Models.Base;
+using Chrominsky.Utils.Enums;
+using Chrominsky.Utils.Models.Base.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Chrominsky.Utils.Repositories.Base;
@@ -27,7 +28,7 @@ public abstract class BaseDatabaseRepository<T> : IBaseDatabaseRepository<T> whe
     }
 
     /// <inheritdoc />
-    public async Task<Guid> AddAsync<T>(T entity) where T : BaseDatabaseEntity
+    public async Task<Guid> AddAsync<T>(T entity) where T : class, IBaseDatabaseEntity
     {
         entity.Id = Guid.NewGuid();
         entity.CreatedAt = DateTime.UtcNow;
@@ -37,7 +38,7 @@ public abstract class BaseDatabaseRepository<T> : IBaseDatabaseRepository<T> whe
     }
 
     /// <inheritdoc />
-    public async Task<T> UpdateAsync<T>(T entity) where T : BaseDatabaseEntity 
+    public async Task<T> UpdateAsync<T>(T entity) where T : class, IBaseDatabaseEntity
     {
         entity.UpdatedAt = DateTime.UtcNow;
         _dbContext.Set<T>().Update(entity);
@@ -46,12 +47,12 @@ public abstract class BaseDatabaseRepository<T> : IBaseDatabaseRepository<T> whe
     }
 
     /// <inheritdoc />
-    public async Task<bool> DeleteAsync<T>(Guid id) where T : BaseDatabaseEntity 
+    public async Task<bool> DeleteAsync<T>(Guid id) where T : class, IBaseDatabaseEntity
     {
         T entity = await _dbContext.FindAsync<T>(id);
         if (entity == null)
             return false;
-        entity.IsDeleted = true;
+        entity.Status = DatabaseEntityStatus.Deleted;
         var rowsAffected = await _dbContext.SaveChangesAsync();
         return rowsAffected > 0;
         
