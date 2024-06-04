@@ -9,6 +9,14 @@ namespace Chrominsky.Utils.Repositories.Base;
 /// <typeparam name="T">Type of entity to be handled by the repository.</typeparam>
 public interface IBaseDatabaseRepository<T>
 {
+    
+    /// <summary>
+    /// Retrieves all entities of type T from the database.
+    /// </summary>
+    /// <typeparam name="T">Type of entity to be retrieved.</typeparam>
+    /// <returns>An enumerable collection of entities of type T.</returns>
+    Task<IEnumerable<T>> GetAllAsync<T>() where T : class;
+    
     /// <summary>
     /// Retrieves an entity by its unique identifier.
     /// </summary>

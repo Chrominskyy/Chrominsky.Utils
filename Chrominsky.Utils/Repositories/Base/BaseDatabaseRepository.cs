@@ -22,6 +22,12 @@ public abstract class BaseDatabaseRepository<T> : IBaseDatabaseRepository<T> whe
     }
 
     /// <inheritdoc />
+    public async Task<IEnumerable<T>> GetAllAsync<T>() where T : class
+    {
+        return await _dbContext.Set<T>().ToListAsync();
+    }
+
+    /// <inheritdoc />
     public async Task<T> GetByIdAsync<T>(Guid id) where T : class
     {
         return await _dbContext.Set<T>().FindAsync(id);
