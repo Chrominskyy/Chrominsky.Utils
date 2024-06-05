@@ -39,7 +39,7 @@ public interface IBaseDatabaseRepository<T>
     /// <typeparam name="T">Type of entity to be updated.</typeparam>
     /// <param name="entity">The updated entity.</param>
     /// <returns>The updated entity.</returns>
-    Task<T> UpdateAsync<T>(T entity) where T : class, IBaseDatabaseEntity;
+    Task<T?> UpdateAsync<T>(T? entity) where T : class, IBaseDatabaseEntity;
 
     /// <summary>
     /// Deletes an entity from the database by its unique identifier.

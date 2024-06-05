@@ -44,10 +44,32 @@ public abstract class BaseDatabaseRepository<T> : IBaseDatabaseRepository<T> whe
     }
 
     /// <inheritdoc />
-    public async Task<T> UpdateAsync<T>(T entity) where T : class, IBaseDatabaseEntity
+    public async Task<T?> UpdateAsync<T>(T? entity) where T : class, IBaseDatabaseEntity
     {
-        entity.UpdatedAt = DateTime.UtcNow;
-        _dbContext.Set<T>().Update(entity);
+        ArgumentNullException.ThrowIfNull(entity);
+        
+        var existingEntity = await _dbContext.Set<T>().FindAsync(entity.Id);
+        if(existingEntity == null)
+            throw new KeyNotFoundException($"Entity with id {entity.Id} not found.");
+        
+        existingEntity.UpdatedAt = DateTime.UtcNow;
+
+        var properties = typeof(T).GetProperties();
+        foreach (var property in properties)
+        {
+            var newValue = property.GetValue(entity);
+            switch (newValue)
+            {
+                case null:
+                case DateTime time when time == DateTime.MinValue:
+                case Guid guid when guid == Guid.Empty:
+                    continue;
+                default:
+                    property.SetValue(existingEntity, newValue);
+                    break;
+            }
+        }
+        
         await _dbContext.SaveChangesAsync();
         return entity;
     }
