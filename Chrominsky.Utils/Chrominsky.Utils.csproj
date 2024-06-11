@@ -5,7 +5,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <PackageId>Chrominsky.Utils</PackageId>
-        <Version>1.0.6</Version>
+        <Version>1.0.7</Version>
         <Authors>Bartosz Chrominski</Authors>
         <Description>GitHub url: https://github.com/Chrominskyy/Chrominsky.Utils</Description>
         <PackageReleaseNotes>https://github.com/Chrominskyy/Chrominsky.Utils/blob/main/Chrominsky.Utils/CHANGELOG.md</PackageReleaseNotes>
@@ -14,7 +14,7 @@
 
     <ItemGroup>
       <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.4" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.6" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
       <PackageReference Include="StackExchange.Redis" Version="2.7.33" />
     </ItemGroup>

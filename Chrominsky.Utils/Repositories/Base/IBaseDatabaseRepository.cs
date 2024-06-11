@@ -61,4 +61,18 @@ public interface IBaseDatabaseRepository<T>
     /// The returned collection may be empty if no matching entities are found.
     /// </remarks>
     Task<List<T>> SearchAsync<T>(SearchParameterRequest request) where T : class, IBaseDatabaseEntity;
+    
+    /// <summary>
+    /// Retrieves a paginated list of entities of type T from the database.
+    /// </summary>
+    /// <typeparam name="T">Type of entity to be retrieved.</typeparam>
+    /// <param name="page">The page number to retrieve. Pages are 1-indexed.</param>
+    /// <param name="pageSize">The number of entities to include in each page.</param>
+    /// <returns>A PaginatedResponse containing the requested page of entities of type T.</returns>
+    /// <remarks>
+    /// The PaginatedResponse class contains properties for the total number of entities,
+    /// the current page number, the page size, and the collection of entities.
+    /// If no entities are found for the specified page and page size, the collection will be empty.
+    /// </remarks>
+    Task<PaginatedResponse<IEnumerable<T>>> GetPaginatedAsync<T>(int page, int pageSize) where T : class, IBaseDatabaseEntity;
 }

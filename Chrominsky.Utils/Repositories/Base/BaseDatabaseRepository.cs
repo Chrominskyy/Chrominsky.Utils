@@ -88,12 +88,7 @@ public abstract class BaseDatabaseRepository<T> : IBaseDatabaseRepository<T> whe
         
     }
 
-    /// <summary>
-    /// Performs a search operation on the database based on the provided search parameters.
-    /// </summary>
-    /// <typeparam name="T">The type of entity to search for.</typeparam>
-    /// <param name="request">The search parameters and pagination details.</param>
-    /// <returns>A list of entities that match the search criteria.</returns>
+    /// <inheritdoc />
     public async Task<List<T>> SearchAsync<T>(SearchParameterRequest request) where T : class, IBaseDatabaseEntity
     {
         var table = _dbContext.Set<T>().AsQueryable();
@@ -155,6 +150,28 @@ public abstract class BaseDatabaseRepository<T> : IBaseDatabaseRepository<T> whe
             .ToListAsync();
 
         return result;
+    }
+
+    /// <inheritdoc />
+    public async Task<PaginatedResponse<IEnumerable<T>>> GetPaginatedAsync<T>(int page, int pageSize)
+        where T : class, IBaseDatabaseEntity
+    {
+        var table = _dbContext.Set<T>().AsQueryable();
+        
+        var itemsToSkip = (page - 1) * pageSize;
+
+        var result = await table.Skip(itemsToSkip)
+            .Take(pageSize)
+            .ToListAsync();
+        var count = table.Count();
+
+        return new PaginatedResponse<IEnumerable<T>>()
+        {
+            Page = page,
+            PageSize = pageSize,
+            TotalCount = count,
+            Data = result
+        };
     }
     
     /// <summary>
@@ -223,7 +240,7 @@ public abstract class BaseDatabaseRepository<T> : IBaseDatabaseRepository<T> whe
     /// <param name="value">The value to compare against.</param>
     /// <returns>A new query with the applied greater than filter.</returns>
     /// <exception cref="Exception">Thrown when the input value cannot be parsed to an integer or a DateTime.</exception>
-    public static IQueryable<T> ApplyGreaterThanFilter<T>(IQueryable<T> query, string key, string value)
+    public IQueryable<T> ApplyGreaterThanFilter<T>(IQueryable<T> query, string key, string value)
     {
         var parameter = Expression.Parameter(typeof(T), "x");
         var property = Expression.Property(parameter, key);
