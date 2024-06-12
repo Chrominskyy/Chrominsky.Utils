@@ -1,15 +1,30 @@
 using Chrominsky.Utils.Enums;
 using Chrominsky.Utils.Models;
+using Chrominsky.Utils.Models.Base;
 using Chrominsky.Utils.Models.Base.Interfaces;
 using Chrominsky.Utils.Repositories.Base;
+using Chrominsky.Utils.Repositories.ObjectVersioning;
 using Microsoft.EntityFrameworkCore;
 
 namespace Chrominsky.Utils.Tests.Repositories
 {
     public class TestDatabaseRepository : BaseDatabaseRepository<TestEntity>
     {
-        public TestDatabaseRepository(DbContext dbContext) : base(dbContext)
+        public TestDatabaseRepository(DbContext dbContext, IObjectVersioningRepository testObjectVersioningRepository) : base(dbContext, testObjectVersioningRepository)
         {
+        }
+    }
+
+    public class TestObjectVersioningRepository : ObjectVersioningRepository, IObjectVersioningRepository
+    {
+        public TestObjectVersioningRepository(DbContext dbContext) : base(dbContext)
+        {
+            
+        }
+
+        public new virtual async Task<Guid> AddAsync(ObjectVersion entity)
+        {
+            return Guid.NewGuid();      
         }
     }
 

@@ -1,7 +1,10 @@
 using System.Linq.Expressions;
+using System.Text.Json;
 using Chrominsky.Utils.Enums;
 using Chrominsky.Utils.Models;
+using Chrominsky.Utils.Models.Base;
 using Chrominsky.Utils.Models.Base.Interfaces;
+using Chrominsky.Utils.Repositories.ObjectVersioning;
 using Microsoft.EntityFrameworkCore;
 
 namespace Chrominsky.Utils.Repositories.Base;
@@ -13,14 +16,16 @@ namespace Chrominsky.Utils.Repositories.Base;
 public abstract class BaseDatabaseRepository<T> : IBaseDatabaseRepository<T> where T : class
 {
     private readonly DbContext _dbContext;
+    private readonly IObjectVersioningRepository _objectVersioningRepository;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BaseDatabaseRepository{T}"/> class.
     /// </summary>
     /// <param name="dbContext">The database context to be used for database operations.</param>
-    protected BaseDatabaseRepository(DbContext dbContext)
+    protected BaseDatabaseRepository(DbContext dbContext, IObjectVersioningRepository objectVersioningRepository)
     {
         _dbContext = dbContext;
+        _objectVersioningRepository = objectVersioningRepository;
     }
 
     /// <inheritdoc />
@@ -42,6 +47,14 @@ public abstract class BaseDatabaseRepository<T> : IBaseDatabaseRepository<T> whe
         entity.CreatedAt = DateTime.UtcNow;
         await _dbContext.Set<T>().AddAsync(entity);
         await _dbContext.SaveChangesAsync();
+        await _objectVersioningRepository.AddAsync(new ObjectVersion()
+        {
+            ObjectType = typeof(T).Name,
+            ObjectTenant = entity.Id,
+            ObjectId = entity.Id,
+            UpdatedBy = entity.CreatedBy,
+            AfterValue = JsonSerializer.Serialize(entity),
+        });
         return entity.Id;
     }
 
@@ -73,6 +86,17 @@ public abstract class BaseDatabaseRepository<T> : IBaseDatabaseRepository<T> whe
         }
         
         await _dbContext.SaveChangesAsync();
+
+        await _objectVersioningRepository.AddAsync(new ObjectVersion()
+        {
+            ObjectType = typeof(T).Name,
+            ObjectTenant = entity.Id,
+            ObjectId = entity.Id,
+            UpdatedBy = entity.CreatedBy,
+            AfterValue = JsonSerializer.Serialize(entity),
+            BeforeValue = JsonSerializer.Serialize(existingEntity),
+        });
+        
         return entity;
     }
 
@@ -82,8 +106,22 @@ public abstract class BaseDatabaseRepository<T> : IBaseDatabaseRepository<T> whe
         T entity = await _dbContext.FindAsync<T>(id);
         if (entity == null)
             return false;
+        
+        var existingEntityJson = JsonSerializer.Serialize(entity);
+        
         entity.Status = DatabaseEntityStatus.Deleted;
         var rowsAffected = await _dbContext.SaveChangesAsync();
+
+        await _objectVersioningRepository.AddAsync(new ObjectVersion()
+        {
+            ObjectType = typeof(T).Name,
+            ObjectTenant = entity.Id,
+            ObjectId = entity.Id,
+            UpdatedBy = entity.CreatedBy,
+            AfterValue = JsonSerializer.Serialize(entity),
+            BeforeValue = existingEntityJson,
+        });
+        
         return rowsAffected > 0;
         
     }

@@ -1,6 +1,8 @@
 using System.Linq.Expressions;
 using Chrominsky.Utils.Enums;
 using Chrominsky.Utils.Models;
+using Chrominsky.Utils.Models.Base;
+using Chrominsky.Utils.Repositories.ObjectVersioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Query;
@@ -12,13 +14,18 @@ namespace Chrominsky.Utils.Tests.Repositories
         private readonly Mock<DbContext> _dbContextMock;
         private readonly Mock<DbSet<TestEntity>> _dbSetMock;
         private readonly TestDatabaseRepository _repository;
+        private readonly Mock<TestObjectVersioningRepository> _testObjectVersioningRepository;
+        private readonly Mock<ObjectVersioningRepository> _objectVersioningRepositoryMock;
 
         public BaseDatabaseRepositoryTests()
         {
             _dbContextMock = new Mock<DbContext>();
             _dbSetMock = new Mock<DbSet<TestEntity>>();
             _dbContextMock.Setup(m => m.Set<TestEntity>()).Returns(_dbSetMock.Object);
-            _repository = new TestDatabaseRepository(_dbContextMock.Object);
+
+            _objectVersioningRepositoryMock = new Mock<ObjectVersioningRepository>();
+            _testObjectVersioningRepository = new Mock<TestObjectVersioningRepository>(_dbContextMock.Object);
+            _repository = new TestDatabaseRepository(_dbContextMock.Object, _testObjectVersioningRepository.Object);
         }
 
         private Mock<DbSet<T>> CreateDbSetMock<T>(IEnumerable<T> elements) where T : class
@@ -99,6 +106,7 @@ namespace Chrominsky.Utils.Tests.Repositories
             // Assert
             Assert.Equal(entity.Id, result);
             _dbContextMock.Verify(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+            _testObjectVersioningRepository.Verify(m => m.AddAsync(It.IsAny<ObjectVersion>()), Times.Once);
         }
 
         [Fact]
@@ -117,6 +125,7 @@ namespace Chrominsky.Utils.Tests.Repositories
             // Assert
             Assert.Equal(updatedEntity.SomeProperty, existingEntity.SomeProperty);
             _dbContextMock.Verify(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+            _testObjectVersioningRepository.Verify(m => m.AddAsync(It.IsAny<ObjectVersion>()), Times.Once);
         }
 
         [Fact]
@@ -129,6 +138,8 @@ namespace Chrominsky.Utils.Tests.Repositories
 
             // Act & Assert
             await Assert.ThrowsAsync<KeyNotFoundException>(() => _repository.UpdateAsync(updatedEntity));
+
+            _testObjectVersioningRepository.Verify(m => m.AddAsync(It.IsAny<ObjectVersion>()), Times.Never);
         }
 
         [Fact]
@@ -147,6 +158,7 @@ namespace Chrominsky.Utils.Tests.Repositories
             Assert.True(result);
             Assert.Equal(DatabaseEntityStatus.Deleted, entity.Status);
             _dbContextMock.Verify(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+            _testObjectVersioningRepository.Verify(m => m.AddAsync(It.IsAny<ObjectVersion>()), Times.Once);
         }
 
         [Fact]
@@ -161,6 +173,7 @@ namespace Chrominsky.Utils.Tests.Repositories
 
             // Assert
             Assert.False(result);
+            _testObjectVersioningRepository.Verify(m => m.AddAsync(It.IsAny<ObjectVersion>()), Times.Never);
         }
 
         [Fact]
