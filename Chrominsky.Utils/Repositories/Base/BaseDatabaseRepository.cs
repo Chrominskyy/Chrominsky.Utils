@@ -92,7 +92,7 @@ public abstract class BaseDatabaseRepository<T> : IBaseDatabaseRepository<T> whe
             ObjectType = typeof(T).Name,
             ObjectTenant = entity.Id,
             ObjectId = entity.Id,
-            UpdatedBy = entity.CreatedBy,
+            UpdatedBy = entity.UpdatedBy,
             AfterValue = JsonSerializer.Serialize(entity),
             BeforeValue = JsonSerializer.Serialize(existingEntity),
         });

@@ -5,7 +5,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <PackageId>Chrominsky.Utils</PackageId>
-        <Version>1.0.8</Version>
+        <Version>1.0.9</Version>
         <Authors>Bartosz Chrominski</Authors>
         <Description>GitHub url: https://github.com/Chrominskyy/Chrominsky.Utils</Description>
         <PackageReleaseNotes>https://github.com/Chrominskyy/Chrominsky.Utils/blob/main/Chrominsky.Utils/CHANGELOG.md</PackageReleaseNotes>

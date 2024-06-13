@@ -38,6 +38,7 @@ public class ObjectVersioningRepository : IObjectVersioningRepository
     public async Task<Guid> AddAsync(ObjectVersion entity)
     {
         entity.Id = Guid.NewGuid();
+        entity.UpdatedOn = DateTime.UtcNow;
         await _dbContext.Set<ObjectVersion>().AddAsync(entity);
         await _dbContext.SaveChangesAsync();
         return entity.Id;
