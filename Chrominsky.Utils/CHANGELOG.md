@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 This format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## [1.1.1] - 2024-12-05
+### Changed
+- `DatabaseEntityStatus` enum is now being parsed to string + summary change
+- `BaseDatabaseEntity` marked Id column Key
+- `BaseDatabaseRepository` fixed updating entity
+
 ## [1.1.0] - 2024-08-27
 ### Added
 - `SimpleEmailSender` - to support email sending with very few commands.

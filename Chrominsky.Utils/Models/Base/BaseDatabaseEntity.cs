@@ -13,6 +13,7 @@ public abstract class BaseDatabaseEntity : IBaseDatabaseEntity
 {
     /// <inheritdoc />
     [Required]
+    [Key]
     public Guid Id { get; set; }
 
     /// <inheritdoc />

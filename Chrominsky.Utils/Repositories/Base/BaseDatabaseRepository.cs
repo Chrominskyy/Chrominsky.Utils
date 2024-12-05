@@ -66,7 +66,8 @@ public abstract class BaseDatabaseRepository<T> : IBaseDatabaseRepository<T> whe
         var existingEntity = await _dbContext.Set<T>().FindAsync(entity.Id);
         if(existingEntity == null)
             throw new KeyNotFoundException($"Entity with id {entity.Id} not found.");
-        
+
+        var beforeValue = JsonSerializer.Serialize(existingEntity);
         entity.UpdatedAt = DateTime.UtcNow;
 
         var properties = typeof(T).GetProperties();
@@ -85,19 +86,20 @@ public abstract class BaseDatabaseRepository<T> : IBaseDatabaseRepository<T> whe
             }
         }
         
+        var afterValue = JsonSerializer.Serialize(existingEntity);
         await _dbContext.SaveChangesAsync();
 
         await _objectVersioningRepository.AddAsync(new ObjectVersion()
         {
             ObjectType = typeof(T).Name,
-            ObjectTenant = entity.Id,
-            ObjectId = entity.Id,
-            UpdatedBy = entity.UpdatedBy,
-            AfterValue = JsonSerializer.Serialize(entity),
-            BeforeValue = JsonSerializer.Serialize(existingEntity),
+            ObjectTenant = existingEntity.Id,
+            ObjectId = existingEntity.Id,
+            UpdatedBy = existingEntity.UpdatedBy,
+            AfterValue = afterValue,
+            BeforeValue = beforeValue,
         });
         
-        return entity;
+        return existingEntity;
     }
 
     /// <inheritdoc />
