@@ -19,4 +19,9 @@ public class SearchParameterRequest
     /// Gets or sets the collection of search parameters to apply to the search.
     /// </summary>
     public IEnumerable<SearchParameter> SearchParameters { get; set; }
+    
+    /// <summary>
+    /// Gets or sets a value indicating whether to include not active entities in the search.
+    /// </summary>
+    public bool IncludeNotActive { get; set; }
 }

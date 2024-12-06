@@ -34,6 +34,6 @@ public abstract class BaseDatabaseEntity : IBaseDatabaseEntity
 
     /// <inheritdoc />
     [Required]
-    [Newtonsoft.Json.JsonConverter(typeof(JsonStringEnumConverter))]
+    [System.Text.Json.Serialization.JsonConverter(typeof(JsonStringEnumConverter))]
     public DatabaseEntityStatus Status { get; set; }
 }

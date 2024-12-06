@@ -16,6 +16,13 @@ public interface IBaseDatabaseRepository<T>
     /// <typeparam name="T">Type of entity to be retrieved.</typeparam>
     /// <returns>An enumerable collection of entities of type T.</returns>
     Task<IEnumerable<T>> GetAllAsync<T>() where T : class;
+
+    /// <summary>
+    /// Retrieves all entities of type T and DatabaseEntityStatus of Active from the database.
+    /// </summary>
+    /// <typeparam name="T">Type of entity to be retrieved.</typeparam>
+    /// <returns>An enumerable collection of entities of type T.</returns>
+    Task<IEnumerable<T>> GetAllActiveAsync<T>() where T : class, IBaseDatabaseEntity;
     
     /// <summary>
     /// Retrieves an entity by its unique identifier.

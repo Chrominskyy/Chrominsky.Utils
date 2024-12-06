@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text.Json;
 using Chrominsky.Utils.Enums;
 using Chrominsky.Utils.Models;
@@ -32,6 +33,12 @@ public abstract class BaseDatabaseRepository<T> : IBaseDatabaseRepository<T> whe
     public async Task<IEnumerable<T>> GetAllAsync<T>() where T : class
     {
         return await _dbContext.Set<T>().ToListAsync();
+    }
+    
+    /// <inheritdoc />
+    public async Task <IEnumerable<T>> GetAllActiveAsync<T>() where T : class, IBaseDatabaseEntity
+    {
+        return await _dbContext.Set<T>().Where(x => x.Status == DatabaseEntityStatus.Active).ToListAsync();
     }
 
     /// <inheritdoc />
@@ -132,52 +139,61 @@ public abstract class BaseDatabaseRepository<T> : IBaseDatabaseRepository<T> whe
     public async Task<List<T>> SearchAsync<T>(SearchParameterRequest request) where T : class, IBaseDatabaseEntity
     {
         var table = _dbContext.Set<T>().AsQueryable();
+        var entityType = typeof(T);
+        
+        if(!request.IncludeNotActive)
+            table = table.Where(x => x.Status == DatabaseEntityStatus.Active);
+
         foreach (var searchParameter in request.SearchParameters)
         {
+            var propertyInfo = entityType.GetProperty(searchParameter.Key, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
+            if (propertyInfo == null)
+                continue;
+
+            var propertyType = propertyInfo.PropertyType;
+            
             table = searchParameter.Operator switch
             {
-                SearchOperator.Contains => 
-                    table.Where(
-                        x => 
-                            EF.Property<string>
-                            (
-                                x,
-                                searchParameter.Key
-                            )
-                            .Contains(searchParameter.Value)),
-                SearchOperator.Equals =>
-                    table.Where(x =>
-                        EF.Property<string>
-                            (
-                                x,
-                                searchParameter.Key
-                            )
-                            .Equals(searchParameter.Value)),
-                SearchOperator.GreaterThan =>
-                    ApplyGreaterThanFilter(
-                        table,
-                        searchParameter.Key,
-                        searchParameter.Value
-                    ),
-                SearchOperator.LessThan =>
-                    ApplyLessThanFilter(
-                        table,
-                        searchParameter.Key,
-                        searchParameter.Value
-                    ),
-                SearchOperator.GreaterOrEqualThan =>
-                    ApplyGreaterOrEqualThanFilter(
-                        table,
-                        searchParameter.Key,
-                        searchParameter.Value
-                    ),
-                SearchOperator.LessOrEqualThan =>
-                    ApplyLessOrEqualThanFilter(
-                        table,
-                        searchParameter.Key,
-                        searchParameter.Value
-                    ),
-                _ => table
+                SearchOperator.Contains when propertyType == typeof(string) =>
+                    table.Where(x => EF.Property<string>(x, searchParameter.Key).Contains(searchParameter.Value)),
+
+                SearchOperator.Equals => 
+                    propertyType switch
+                    {
+                        Type t when t == typeof(bool) =>
+                            bool.TryParse(searchParameter.Value, out bool boolValue) 
+                                ? table.Where(x => EF.Property<bool>(x, searchParameter.Key) == boolValue)
+                                : table,
+
+                        Type t when t == typeof(int) =>
+                            int.TryParse(searchParameter.Value, out int intValue)
+                                ? table.Where(x => EF.Property<int>(x, searchParameter.Key) == intValue)
+                                : table,
+
+                        Type t when t == typeof(DateTime) =>
+                            DateTime.TryParse(searchParameter.Value, out DateTime dateValue)
+                                ? table.Where(x => EF.Property<DateTime>(x, searchParameter.Key) == dateValue)
+                                : table,
+
+                        _ => table.Where(x => EF.Property<string>(x, searchParameter.Key).Equals(searchParameter.Value))
+                    },
+
+                _ => searchParameter.Operator switch
+                {
+                    SearchOperator.GreaterThan =>
+                        ApplyGreaterThanFilter(table, searchParameter.Key, searchParameter.Value),
+
+                    SearchOperator.LessThan =>
+                        ApplyLessThanFilter(table, searchParameter.Key, searchParameter.Value),
+
+                    SearchOperator.GreaterOrEqualThan =>
+                        ApplyGreaterOrEqualThanFilter(table, searchParameter.Key, searchParameter.Value),
+
+                    SearchOperator.LessOrEqualThan =>
+                        ApplyLessOrEqualThanFilter(table, searchParameter.Key, searchParameter.Value),
+
+                    _ => table
+                }
             };
         }
 

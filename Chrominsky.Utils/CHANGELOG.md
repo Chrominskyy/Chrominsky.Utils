@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 This format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.3] - 2024-12-06
+### Changed
+- `BaseDatabaseEntity` - fixed library for json serialization
+- `BaseEntity` - fixed library for json serialization
+- `BaseDatabaseRepository` - fixed Search method + added method `GetAllActiveAsync` to retrieve only active entities
+- `IBaseDatabaseRepository` - added method `GetAllActiveAsync` to retrieve only active entities
+- `SearchParameterRequest` - added `IncludeNotActive` parameter to support searching for not active entities
+
 ## [1.1.2] - 2024-12-05
 ### Changed
 - tag fix for nuget
