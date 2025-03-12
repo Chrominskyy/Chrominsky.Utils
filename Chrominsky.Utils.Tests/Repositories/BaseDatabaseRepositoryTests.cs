@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using System.Text.Json;
 using Chrominsky.Utils.Enums;
 using Chrominsky.Utils.Models;
 using Chrominsky.Utils.Models.Base;
@@ -307,6 +308,49 @@ namespace Chrominsky.Utils.Tests.Repositories
             Assert.Equal(2, result.PageSize);
             Assert.Equal(0, result.TotalCount);
             Assert.Empty(result.Data);
+        }
+
+        [Fact]
+        public async Task GetTableColumnsAsync_ShouldReturnTableColumns_WhenEntityExists()
+        {
+            // Arrange
+            var columns = new List<TableColumn>
+            {
+                new() { ColumnName = "Id", Type = "int", Order = 1, DefaultValue = null, MaxLength = 0, IsNullable = 0 },
+                new()
+                {
+                    ColumnName = "SomeProperty", Type = "string", Order = 2, DefaultValue = null, MaxLength = 255,
+                    IsNullable = 1,
+                },
+            };
+            
+            var tableColumns = new TableColumns
+            {
+                TableName = "TestEntity",
+                Json = JsonSerializer.Serialize(columns)
+            };
+            var mockSet = CreateDbSetMock([tableColumns]);
+            _dbContextMock.Setup(m => m.Set<TableColumns>().AsQueryable()).Returns(mockSet.Object);
+
+            // Act
+            var result = _repository.GetTableColumnsAsync<TestEntity>();
+
+            // Assert
+            Assert.Equal(tableColumns, result);
+        }
+
+        [Fact]
+        public async Task GetTableColumnsAsync_ShouldReturnEmptyTableColumns_WhenEntityDoesNotExist()
+        {
+            // Arrange
+            var mockSet = CreateDbSetMock<TableColumns>([]);
+            _dbContextMock.Setup(m => m.Set<TableColumns>().AsQueryable()).Returns(mockSet.Object);
+
+            // Act
+            var result = _repository.GetTableColumnsAsync<TestEntity>();
+
+            // Assert
+            Assert.Null(result);
         }
 
         private class TestAsyncEnumerator<T> : IAsyncEnumerator<T>

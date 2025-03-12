@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 This format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2025-03-12
+### Added
+- `TableColumns` - added model to support table columns
+- `TableColumnsMapper` - added mapper to map table columns to model
+- `TableColumnsDto` - added dto to support table columns
+
+### Changed
+- `BaseDatabaseRepository` - added method `GetTableColumnsAsync` to retrieve table columns
+- `IBaseDatabaseRepository` - added method `GetTableColumnsAsync` to retrieve table columns
+
 ## [1.1.3] - 2024-12-06
 ### Changed
 - `BaseDatabaseEntity` - fixed library for json serialization

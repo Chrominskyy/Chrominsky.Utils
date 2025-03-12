@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.Json;
@@ -86,6 +87,7 @@ public abstract class BaseDatabaseRepository<T> : IBaseDatabaseRepository<T> whe
                 case null:
                 case DateTime time when time == DateTime.MinValue:
                 case Guid guid when guid == Guid.Empty:
+                case IEnumerable enumerable when !IsEnumerablePopulated(enumerable):
                     continue;
                 default:
                     property.SetValue(existingEntity, newValue);
@@ -229,7 +231,16 @@ public abstract class BaseDatabaseRepository<T> : IBaseDatabaseRepository<T> whe
             Data = result
         };
     }
-    
+
+    /// <inheritdoc />
+    public TableColumns? GetTableColumnsAsync<T>() where T : class, IBaseDatabaseEntity
+    {
+        IQueryable<TableColumns?> table = _dbContext.Set<TableColumns>().AsQueryable();
+        var entityType = typeof(T).Name;
+        
+        return table.FirstOrDefault(c=> c.TableName == entityType) ?? null;
+    }
+
     /// <summary>
     /// Applies a less than filter to the given query based on the specified key and value.
     /// </summary>
@@ -453,5 +464,36 @@ public abstract class BaseDatabaseRepository<T> : IBaseDatabaseRepository<T> whe
 
         // Throw an exception if the input value cannot be parsed to an integer or a DateTime
         throw new Exception($"{nameof(ApplyGreaterThanFilter)} - Invalid input" );
+    }
+    
+    private bool IsEnumerablePopulated(IEnumerable enumerable)
+    {
+        // Handle null
+        if (enumerable == null)
+            return false;
+
+        // Check if it's a generic IEnumerable<T>
+        var enumerableType = enumerable.GetType();
+        if (enumerableType.IsGenericType &&
+            enumerableType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+        {
+            // Use LINQ Count() method to check population
+            var countMethod = enumerableType.GetMethod("Count", Type.EmptyTypes);
+            if (countMethod != null)
+            {
+                return (int)countMethod.Invoke(enumerable, null) > 0;
+            }
+        }
+
+        // Fallback to manual enumeration
+        var enumerator = enumerable.GetEnumerator();
+        try
+        {
+            return enumerator.MoveNext();
+        }
+        finally
+        {
+            (enumerator as IDisposable)?.Dispose();
+        }
     }
 }

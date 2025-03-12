@@ -82,4 +82,11 @@ public interface IBaseDatabaseRepository<T>
     /// If no entities are found for the specified page and page size, the collection will be empty.
     /// </remarks>
     Task<PaginatedResponse<IEnumerable<T>>> GetPaginatedAsync<T>(int page, int pageSize) where T : class, IBaseDatabaseEntity;
+
+    /// <summary>
+    /// Retrieves the columns of a table for the specified entity type.
+    /// </summary>
+    /// <typeparam name="T">Type of entity whose table columns are to be retrieved.</typeparam>
+    /// <returns>A <see cref="TableColumns"/> containing the table name and columns.</returns>
+    TableColumns? GetTableColumnsAsync<T>() where T : class, IBaseDatabaseEntity;
 }
