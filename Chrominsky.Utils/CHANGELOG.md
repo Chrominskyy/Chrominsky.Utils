@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 This format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1] - 2025-03-12
+### Changed
+- `BaseDatabaseRepository` - fixed `GetTableColumnsAsync` method to allow tableName to be passed as parameter
+
 ## [1.2.0] - 2025-03-12
 ### Added
 - `TableColumns` - added model to support table columns

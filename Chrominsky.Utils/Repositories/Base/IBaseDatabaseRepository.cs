@@ -86,7 +86,8 @@ public interface IBaseDatabaseRepository<T>
     /// <summary>
     /// Retrieves the columns of a table for the specified entity type.
     /// </summary>
+    /// <param name="tableName">Optional parameter to pass if table name is different than dbContext entity name.</param>
     /// <typeparam name="T">Type of entity whose table columns are to be retrieved.</typeparam>
     /// <returns>A <see cref="TableColumns"/> containing the table name and columns.</returns>
-    TableColumns? GetTableColumnsAsync<T>() where T : class, IBaseDatabaseEntity;
+    TableColumns? GetTableColumnsAsync<T>(string? tableName = null) where T : class, IBaseDatabaseEntity;
 }

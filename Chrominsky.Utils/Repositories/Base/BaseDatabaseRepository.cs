@@ -232,11 +232,12 @@ public abstract class BaseDatabaseRepository<T> : IBaseDatabaseRepository<T> whe
         };
     }
 
+    /// <param name="tableName"></param>
     /// <inheritdoc />
-    public TableColumns? GetTableColumnsAsync<T>() where T : class, IBaseDatabaseEntity
+    public TableColumns? GetTableColumnsAsync<T>(string? tableName = null) where T : class, IBaseDatabaseEntity
     {
         IQueryable<TableColumns?> table = _dbContext.Set<TableColumns>().AsQueryable();
-        var entityType = typeof(T).Name;
+        var entityType = tableName?? typeof(T).Name;
         
         return table.FirstOrDefault(c=> c.TableName == entityType) ?? null;
     }

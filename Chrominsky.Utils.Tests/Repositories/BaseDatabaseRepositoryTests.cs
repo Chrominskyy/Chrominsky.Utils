@@ -340,6 +340,38 @@ namespace Chrominsky.Utils.Tests.Repositories
         }
 
         [Fact]
+        public async Task GetTableColumnsAsync_ShouldReturnTableColumns_WhenEntityExistsTableNamePassed()
+        {
+            // Arrange
+            var columns = new List<TableColumn>
+            {
+                new()
+                {
+                    ColumnName = "Id", Type = "int", Order = 1, DefaultValue = null, MaxLength = 0, IsNullable = 0
+                },
+                new()
+                {
+                    ColumnName = "SomeProperty", Type = "string", Order = 2, DefaultValue = null, MaxLength = 255,
+                    IsNullable = 1,
+                },
+            };
+
+            var tableColumns = new TableColumns
+            {
+                TableName = "TestEntity2",
+                Json = JsonSerializer.Serialize(columns)
+            };
+            var mockSet = CreateDbSetMock([tableColumns]);
+            _dbContextMock.Setup(m => m.Set<TableColumns>().AsQueryable()).Returns(mockSet.Object);
+
+            // Act
+            var result = _repository.GetTableColumnsAsync<TestEntity>("TestEntity2");
+
+            // Assert
+            Assert.Equal(tableColumns, result);
+        }
+
+        [Fact]
         public async Task GetTableColumnsAsync_ShouldReturnEmptyTableColumns_WhenEntityDoesNotExist()
         {
             // Arrange
