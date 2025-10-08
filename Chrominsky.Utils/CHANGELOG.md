@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 This format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Added
+- Docker support with sample configurations
+  - `docker-compose.yml` - orchestrates Redis, PostgreSQL, and SQL Server
+  - `docker-compose.dev.yml` - simplified development setup
+  - Sample Dockerfile templates for .NET 8.0 applications
+  - `.dockerignore` file for optimized builds
+  - Database initialization scripts for PostgreSQL and SQL Server
+  - Comprehensive Docker documentation in `docker/README.md`
+
 ## [1.3.0] - 2025-03-14
 ### Added
 - PostgreSQL support for `DatabaseColumnTypes` - added PostgreSQL data types (varchar, character varying, integer, bigint, boolean, uuid, timestamp, bytea, etc.)

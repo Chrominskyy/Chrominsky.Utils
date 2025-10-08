@@ -1,0 +1,45 @@
+# .dockerignore
+# This file specifies files and directories that should be excluded when building Docker images
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# CI/CD
+.github
+
+# Documentation
+*.md
+!README.md
+
+# Build results
+**/bin/
+**/obj/
+**/out/
+
+# NuGet
+*.nupkg
+*.snupkg
+.nuspec
+
+# IDE
+.vs/
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Test results
+**/TestResults/
+**/test-results/
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+**/tmp/
+**/.tmp/
