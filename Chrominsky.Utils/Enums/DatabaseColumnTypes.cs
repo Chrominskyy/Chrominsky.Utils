@@ -3,7 +3,7 @@ namespace Chrominsky.Utils.Enums;
 public class DatabaseColumnTypes
 {
     public static List<string> Text { get; } =
-        ["char", "nchar", "varchar", "nvarchar", "text", "ntext"];
+        ["char", "nchar", "varchar", "nvarchar", "text", "ntext", "character varying", "character", "bpchar"];
     public static List<string> Number { get; } =
         [
             "int",
@@ -16,12 +16,19 @@ public class DatabaseColumnTypes
             "real",
             "money",
             "smallmoney",
+            "integer",
+            "int2",
+            "int4",
+            "int8",
+            "float4",
+            "float8",
+            "double precision",
         ];
     public static List<string> Date { get; } =
-        ["date", "datetime", "datetime2", "smalldatetime", "datetimeoffset", "time"];
-    public static List<string> Binary { get; } = ["binary", "varbinary", "image"];
-    public static List<string> Boolean { get; } = ["bit"];
-    public static List<string> Lookup { get; } = ["uniqueidentifier"];
+        ["date", "datetime", "datetime2", "smalldatetime", "datetimeoffset", "time", "timestamp", "timestamp without time zone", "timestamp with time zone", "timestamptz", "time without time zone", "time with time zone", "timetz", "interval"];
+    public static List<string> Binary { get; } = ["binary", "varbinary", "image", "bytea"];
+    public static List<string> Boolean { get; } = ["bit", "boolean", "bool"];
+    public static List<string> Lookup { get; } = ["uniqueidentifier", "uuid"];
 
     /// <summary>
     /// Returns the group name that the specified data type belongs to.
