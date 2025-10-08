@@ -1,94 +1,94 @@
 # Chrominsky.Utils
 
-`Chrominsky.Utils` to biblioteka narzędziowa dla .NET 8.0, która dostarcza zaawansowane komponenty do uproszczenia typowych zadań programistycznych w C#. Biblioteka oferuje gotowe rozwiązania dla operacji bazodanowych, cache'owania, wysyłania emaili i zarządzania bezpieczeństwem.
+`Chrominsky.Utils` is a utility library for .NET 8.0 that provides advanced components to simplify common programming tasks in C#. The library offers ready-made solutions for database operations, caching, email sending, and security management.
 
 [![NuGet](https://img.shields.io/nuget/v/Chrominsky.Utils.svg)](https://www.nuget.org/packages/Chrominsky.Utils/)
 [![.NET](https://img.shields.io/badge/.NET-8.0-blue)](https://dotnet.microsoft.com/)
 
-## 📋 Spis treści
+## 📋 Table of Contents
 
-- [Funkcjonalności](#-funkcjonalności)
-- [Instalacja](#-instalacja)
-- [Użycie](#-użycie)
-  - [Repository bazowe z wersjonowaniem](#repository-bazowe-z-wersjonowaniem)
-  - [Cache Redis](#cache-redis)
-  - [Hashowanie haseł BCrypt](#hashowanie-haseł-bcrypt)
-  - [Wysyłanie emaili](#wysyłanie-emaili)
-  - [Wyszukiwanie i paginacja](#wyszukiwanie-i-paginacja)
-- [Wymagania](#-wymagania)
+- [Features](#-features)
+- [Installation](#-installation)
+- [Usage](#-usage)
+  - [Base Repository with Versioning](#base-repository-with-versioning)
+  - [Redis Cache](#redis-cache)
+  - [BCrypt Password Hashing](#bcrypt-password-hashing)
+  - [Email Sending](#email-sending)
+  - [Search and Pagination](#search-and-pagination)
+- [Requirements](#-requirements)
 - [Changelog](#-changelog)
-- [Współpraca](#-współpraca)
-- [Licencja](#-licencja)
-- [Kontakt](#-kontakt)
+- [Contributing](#-contributing)
+- [License](#-license)
+- [Contact](#-contact)
 
-## ✨ Funkcjonalności
+## ✨ Features
 
-### 🗄️ Repository bazowe (BaseDatabaseRepository)
-- **CRUD z automatycznym wersjonowaniem** - pełna obsługa operacji Create, Read, Update, Delete
-- **Wyszukiwanie zaawansowane** - filtry z operatorami (`Contains`, `Equals`, `LessThan`, `GreaterThan`, etc.)
-- **Paginacja** - wbudowana obsługa stronicowania wyników
-- **Śledzenie zmian** - automatyczne wersjonowanie obiektów (ObjectVersioning)
-- **Soft delete** - usuwanie logiczne z wykorzystaniem statusów encji
-- **Metadane kolumn** - pobieranie informacji o strukturze tabel
+### 🗄️ Base Repository (BaseDatabaseRepository)
+- **CRUD with automatic versioning** - full support for Create, Read, Update, Delete operations
+- **Advanced search** - filters with operators (`Contains`, `Equals`, `LessThan`, `GreaterThan`, etc.)
+- **Pagination** - built-in result pagination support
+- **Change tracking** - automatic object versioning (ObjectVersioning)
+- **Soft delete** - logical deletion using entity statuses
+- **Column metadata** - retrieve information about table structure
 
-### 💾 Cache Redis
-- **RedisCacheRepository** - implementacja cache'u z Redis
-- **RedisCacheService** - serwis z funkcją failover (`GetOrAddAsync`)
-- Operacje: Get, Set, Remove, Exists
-- Obsługa czasu wygaśnięcia (expiry)
+### 💾 Redis Cache
+- **RedisCacheRepository** - Redis cache implementation
+- **RedisCacheService** - service with failover functionality (`GetOrAddAsync`)
+- Operations: Get, Set, Remove, Exists
+- Expiry time support
 
-### 🔐 Bezpieczeństwo
-- **BCryptHelper** - hashowanie i weryfikacja haseł z użyciem BCrypt
-- Bezpieczne przechowywanie haseł zgodne z najlepszymi praktykami
+### 🔐 Security
+- **BCryptHelper** - password hashing and verification using BCrypt
+- Secure password storage following best practices
 
-### 📧 Wysyłanie emaili
-- **SimpleEmailSender** - prosty interfejs do wysyłania emaili przez SMTP
-- Konfiguracja przez `IOptions<SimpleEmailSettings>`
-- Obsługa HTML w treści wiadomości
+### 📧 Email Sending
+- **SimpleEmailSender** - simple interface for sending emails via SMTP
+- Configuration through `IOptions<SimpleEmailSettings>`
+- HTML support in message body
 
-### 📦 Modele bazowe
-- **BaseDatabaseEntity** - bazowa klasa encji z pełnymi metadanymi (Id, CreatedAt, UpdatedAt, CreatedBy, UpdatedBy, Status)
-- **BaseDatabaseEntityWithTenantId** - encja z obsługą multi-tenancy
-- **BaseSimpleEntity** - uproszczona encja
-- **ObjectVersion** - model do śledzenia historii zmian obiektów
+### 📦 Base Models
+- **BaseDatabaseEntity** - base entity class with full metadata (Id, CreatedAt, UpdatedAt, CreatedBy, UpdatedBy, Status)
+- **BaseDatabaseEntityWithTenantId** - entity with multi-tenancy support
+- **BaseSimpleEntity** - simplified entity
+- **ObjectVersion** - model for tracking object change history
 
-### 🔍 Typy i enumeracje
-- **DatabaseEntityStatus** - statusy encji (Active, Deleted, etc.)
-- **SearchOperator** - operatory wyszukiwania
-- **SearchOrder** - porządkowanie wyników
-- **DatabaseColumnTypes** - klasyfikacja typów kolumn bazodanowych
+### 🔍 Types and Enumerations
+- **DatabaseEntityStatus** - entity statuses (Active, Deleted, etc.)
+- **SearchOperator** - search operators
+- **SearchOrder** - result ordering
+- **DatabaseColumnTypes** - database column type classification
 
-## 📦 Instalacja
+## 📦 Installation
 
-Zainstaluj pakiet przez NuGet:
+Install the package via NuGet:
 
 ```bash
 dotnet add package Chrominsky.Utils
 ```
 
-Lub dodaj bezpośrednio do pliku `.csproj`:
+Or add directly to your `.csproj` file:
 
 ```xml
 <PackageReference Include="Chrominsky.Utils" Version="1.2.2" />
 ```
 
-## 🚀 Użycie
+## 🚀 Usage
 
-### Repository bazowe z wersjonowaniem
+### Base Repository with Versioning
 
 ```csharp
 using Chrominsky.Utils.Models.Base;
 using Chrominsky.Utils.Repositories.Base;
 using Chrominsky.Utils.Repositories.ObjectVersioning;
 
-// Definicja encji
+// Entity definition
 public class User : BaseDatabaseEntity
 {
     public string Name { get; set; }
     public string Email { get; set; }
 }
 
-// Implementacja repository
+// Repository implementation
 public class UserRepository : BaseDatabaseRepository<User>
 {
     public UserRepository(DbContext dbContext, IObjectVersioningRepository versioningRepo) 
@@ -97,47 +97,47 @@ public class UserRepository : BaseDatabaseRepository<User>
     }
 }
 
-// Użycie
+// Usage
 var user = new User 
 { 
-    Name = "Jan Kowalski", 
-    Email = "jan@example.com",
+    Name = "John Doe", 
+    Email = "john@example.com",
     CreatedBy = "system"
 };
 
-// Dodanie - automatyczne wersjonowanie
+// Add - automatic versioning
 Guid userId = await userRepository.AddAsync(user);
 
-// Pobranie
+// Retrieve
 var existingUser = await userRepository.GetByIdAsync<User>(userId);
 
-// Aktualizacja - automatyczne śledzenie zmian
-existingUser.Email = "nowy@example.com";
+// Update - automatic change tracking
+existingUser.Email = "new@example.com";
 existingUser.UpdatedBy = "admin";
 await userRepository.UpdateAsync(existingUser);
 
-// Usunięcie (soft delete)
+// Delete (soft delete)
 await userRepository.DeleteAsync<User>(userId, "admin");
 
-// Pobranie wszystkich aktywnych
+// Get all active
 var activeUsers = await userRepository.GetAllActiveAsync<User>();
 ```
 
-### Cache Redis
+### Redis Cache
 
 ```csharp
 using Chrominsky.Utils.Services;
 using Chrominsky.Utils.Repositories;
 using StackExchange.Redis;
 
-// Konfiguracja w Program.cs / Startup.cs
+// Configuration in Program.cs / Startup.cs
 services.AddSingleton<IConnectionMultiplexer>(
     ConnectionMultiplexer.Connect("localhost:6379")
 );
 services.AddScoped<ICacheRepository, RedisCacheRepository>();
 services.AddScoped<ICacheService, RedisCacheService>();
 
-// Użycie
+// Usage
 public class ProductService
 {
     private readonly ICacheService _cacheService;
@@ -153,7 +153,7 @@ public class ProductService
     {
         string cacheKey = $"product:{productId}";
         
-        // GetOrAddAsync - pobiera z cache lub wykonuje failover
+        // GetOrAddAsync - retrieves from cache or executes failover
         return await _cacheService.GetOrAddAsync(
             cacheKey,
             async () => await _productRepository.GetByIdAsync<Product>(productId),
@@ -168,46 +168,46 @@ public class ProductService
 }
 ```
 
-### Hashowanie haseł BCrypt
+### BCrypt Password Hashing
 
 ```csharp
 using Chrominsky.Utils.Helpers;
 
 var bcryptHelper = new BCryptHelper();
 
-// Hashowanie hasła
-string password = "MojeSilneHaslo123!";
+// Hash password
+string password = "MyStrongPassword123!";
 string hashedPassword = bcryptHelper.HashPassword(password);
-// $2a$11$... (hash BCrypt)
+// $2a$11$... (BCrypt hash)
 
-// Weryfikacja hasła
-string inputPassword = "MojeSilneHaslo123!";
+// Verify password
+string inputPassword = "MyStrongPassword123!";
 bool isValid = bcryptHelper.VerifyPassword(inputPassword, hashedPassword);
 // true
 ```
 
-### Wysyłanie emaili
+### Email Sending
 
 ```csharp
 using Chrominsky.Utils.Features.SimpleEmailSender;
 
-// Konfiguracja w appsettings.json
+// Configuration in appsettings.json
 {
   "SimpleEmailSettings": {
     "SmtpHost": "smtp.gmail.com",
     "SmtpPort": 587,
-    "SenderEmail": "twoj-email@gmail.com",
-    "SenderPassword": "twoje-haslo-aplikacji"
+    "SenderEmail": "your-email@gmail.com",
+    "SenderPassword": "your-app-password"
   }
 }
 
-// Rejestracja w Program.cs
+// Registration in Program.cs
 services.Configure<SimpleEmailSettings>(
     configuration.GetSection("SimpleEmailSettings")
 );
 services.AddScoped<SimpleEmailSender>();
 
-// Użycie
+// Usage
 public class NotificationService
 {
     private readonly SimpleEmailSender _emailSender;
@@ -219,21 +219,21 @@ public class NotificationService
 
     public void SendWelcomeEmail(string userEmail, string userName)
     {
-        string subject = "Witamy w naszej aplikacji!";
-        string body = $"<h1>Witaj {userName}!</h1><p>Dziękujemy za rejestrację.</p>";
+        string subject = "Welcome to our application!";
+        string body = $"<h1>Welcome {userName}!</h1><p>Thank you for registering.</p>";
         
         _emailSender.SendEmail(userEmail, subject, body);
     }
 }
 ```
 
-### Wyszukiwanie i paginacja
+### Search and Pagination
 
 ```csharp
 using Chrominsky.Utils.Models;
 using Chrominsky.Utils.Enums;
 
-// Wyszukiwanie z filtrami
+// Search with filters
 var searchRequest = new SearchParameterRequest
 {
     Page = 1,
@@ -244,7 +244,7 @@ var searchRequest = new SearchParameterRequest
         new SearchParameter 
         { 
             FieldName = "Name", 
-            Value = "Kowalski", 
+            Value = "Doe", 
             Operator = SearchOperator.Contains 
         },
         new SearchParameter 
@@ -257,23 +257,23 @@ var searchRequest = new SearchParameterRequest
 };
 
 var results = await userRepository.SearchAsync<User>(searchRequest);
-// Zwraca: PaginatedResponse<IEnumerable<User>>
-Console.WriteLine($"Znaleziono {results.TotalCount} użytkowników");
-Console.WriteLine($"Strona {results.Page}/{Math.Ceiling((double)results.TotalCount / results.PageSize)}");
+// Returns: PaginatedResponse<IEnumerable<User>>
+Console.WriteLine($"Found {results.TotalCount} users");
+Console.WriteLine($"Page {results.Page}/{Math.Ceiling((double)results.TotalCount / results.PageSize)}");
 
-// Prosta paginacja
+// Simple pagination
 var paginatedUsers = await userRepository.GetPaginatedAsync<User>(page: 1, pageSize: 50);
 ```
 
-### Pobieranie struktury tabel
+### Retrieving Table Structure
 
 ```csharp
-// Pobieranie informacji o kolumnach tabeli
+// Retrieve table column information
 var tableColumns = userRepository.GetTableColumnsAsync<User>();
 
 if (tableColumns != null)
 {
-    Console.WriteLine($"Tabela: {tableColumns.TableName}");
+    Console.WriteLine($"Table: {tableColumns.TableName}");
     foreach (var column in tableColumns.Columns)
     {
         Console.WriteLine($"- {column.ColumnName}: {column.DataType} (Group: {column.Group})");
@@ -281,64 +281,64 @@ if (tableColumns != null)
 }
 ```
 
-## 📋 Wymagania
+## 📋 Requirements
 
-- **.NET 8.0** lub nowszy
-- **Entity Framework Core 8.0+** (dla funkcjonalności bazodanowych)
-- **StackExchange.Redis 2.7+** (dla cache Redis)
-- **BCrypt.Net-Next 4.0+** (dla hashowania haseł)
+- **.NET 8.0** or newer
+- **Entity Framework Core 8.0+** (for database functionality)
+- **StackExchange.Redis 2.7+** (for Redis cache)
+- **BCrypt.Net-Next 4.0+** (for password hashing)
 
 ## 📝 Changelog
 
-Pełna historia zmian dostępna w pliku [CHANGELOG.md](Chrominsky.Utils/CHANGELOG.md).
+Full change history available in [CHANGELOG.md](Chrominsky.Utils/CHANGELOG.md).
 
-### Najnowsze zmiany (1.2.2 - 2025-03-13)
-- Dodano `DatabaseColumnTypes` - klasę enum do obsługi różnych typów kolumn bazodanowych
+### Latest Changes (1.2.2 - 2025-03-13)
+- Added `DatabaseColumnTypes` - enum class to handle different database column types
 
-### Wersja 1.2.0
-- Dodano `GetTableColumnsAsync` - metoda do pobierania struktury kolumn tabeli
-- Nowe modele: `TableColumns`, `TableColumnsDto`, `TableColumnsMapper`
+### Version 1.2.0
+- Added `GetTableColumnsAsync` - method to retrieve table column structure
+- New models: `TableColumns`, `TableColumnsDto`, `TableColumnsMapper`
 
-### Wersja 1.1.0
-- Dodano `SimpleEmailSender` - funkcjonalność wysyłania emaili
+### Version 1.1.0
+- Added `SimpleEmailSender` - email sending functionality
 
-### Wersja 1.0.8
-- Dodano system wersjonowania obiektów (`ObjectVersion`, `ObjectVersioningRepository`)
+### Version 1.0.8
+- Added object versioning system (`ObjectVersion`, `ObjectVersioningRepository`)
 
-### Wersja 1.0.6
-- Dodano zaawansowane wyszukiwanie (`SearchAsync` w `BaseDatabaseRepository`)
-- Nowe modele: `SearchParameterRequest`, `SearchParameter`, `SearchOperator`
-- Utworzono projekt testów jednostkowych
+### Version 1.0.6
+- Added advanced search (`SearchAsync` in `BaseDatabaseRepository`)
+- New models: `SearchParameterRequest`, `SearchParameter`, `SearchOperator`
+- Created unit test project
 
-## 🤝 Współpraca
+## 🤝 Contributing
 
-Wkład w projekt jest mile widziany! Jeśli chcesz pomóc:
+Contributions are welcome! If you'd like to help:
 
-1. Zforkuj repozytorium
-2. Stwórz branch dla swojej funkcjonalności (`git checkout -b feature/AmazingFeature`)
-3. Commituj swoje zmiany (`git commit -m 'Add some AmazingFeature'`)
-4. Push do brancha (`git push origin feature/AmazingFeature`)
-5. Otwórz Pull Request
+1. Fork the repository
+2. Create a branch for your feature (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-Przed wysłaniem PR, upewnij się że:
-- ✅ Kod się kompiluje bez błędów
-- ✅ Testy jednostkowe przechodzą
-- ✅ Dodano dokumentację XML dla nowych klas/metod
-- ✅ Zaktualizowano CHANGELOG.md
+Before submitting a PR, make sure that:
+- ✅ Code compiles without errors
+- ✅ Unit tests pass
+- ✅ XML documentation added for new classes/methods
+- ✅ CHANGELOG.md updated
 
-## 📄 Licencja
+## 📄 License
 
-Ten projekt jest objęty licencją MIT. Szczegóły w pliku [LICENSE](LICENSE).
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
-## 📧 Kontakt
+## 📧 Contact
 
 **Bartosz Chrominski**
 
 - GitHub: [@Chrominskyy](https://github.com/Chrominskyy)
-- Repozytorium: [Chrominsky.Utils](https://github.com/Chrominskyy/Chrominsky.Utils)
+- Repository: [Chrominsky.Utils](https://github.com/Chrominskyy/Chrominsky.Utils)
 
-W razie pytań lub sugestii, śmiało otwórz issue w repozytorium GitHub.
+For questions or suggestions, feel free to open an issue in the GitHub repository.
 
 ---
 
-⭐ Jeśli ten projekt okazał się pomocny, zostaw gwiazdkę na GitHub!
+⭐ If this project was helpful, leave a star on GitHub!
