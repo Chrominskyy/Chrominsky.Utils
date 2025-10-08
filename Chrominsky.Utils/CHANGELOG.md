@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 This format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2025-03-14
+### Added
+- PostgreSQL support for `DatabaseColumnTypes` - added PostgreSQL data types (varchar, character varying, integer, bigint, boolean, uuid, timestamp, bytea, etc.)
+- Unit tests for PostgreSQL data type mapping in `DatabaseColumnTypesTests`
+
+### Changed
+- `DatabaseColumnTypes` - extended to support both SQL Server and PostgreSQL data types
+
 ## [1.2.2] - 2025-03-13
 ### Added
 - `DatabaseColumnTypes` - added enum class to support handling different database column types for similar data types

@@ -30,6 +30,7 @@
 - **Change tracking** - automatic object versioning (ObjectVersioning)
 - **Soft delete** - logical deletion using entity statuses
 - **Column metadata** - retrieve information about table structure
+- **Database support** - works with SQL Server and PostgreSQL
 
 ### 💾 Redis Cache
 - **RedisCacheRepository** - Redis cache implementation
@@ -56,7 +57,7 @@
 - **DatabaseEntityStatus** - entity statuses (Active, Deleted, etc.)
 - **SearchOperator** - search operators
 - **SearchOrder** - result ordering
-- **DatabaseColumnTypes** - database column type classification
+- **DatabaseColumnTypes** - database column type classification (supports SQL Server and PostgreSQL)
 
 ## 📦 Installation
 
@@ -69,7 +70,7 @@ dotnet add package Chrominsky.Utils
 Or add directly to your `.csproj` file:
 
 ```xml
-<PackageReference Include="Chrominsky.Utils" Version="1.2.2" />
+<PackageReference Include="Chrominsky.Utils" Version="1.3.0" />
 ```
 
 ## 🚀 Usage
@@ -281,10 +282,56 @@ if (tableColumns != null)
 }
 ```
 
+### Using with PostgreSQL
+
+```csharp
+using Microsoft.EntityFrameworkCore;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
+using Chrominsky.Utils.Models.Base;
+using Chrominsky.Utils.Repositories.Base;
+using Chrominsky.Utils.Repositories.ObjectVersioning;
+
+// Configure DbContext for PostgreSQL
+public class AppDbContext : DbContext
+{
+    public DbSet<User> Users { get; set; }
+    public DbSet<ObjectVersion> ObjectVersions { get; set; }
+    
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseNpgsql("Host=localhost;Database=mydb;Username=postgres;Password=password");
+    }
+}
+
+// Repository implementation (same as SQL Server)
+public class UserRepository : BaseDatabaseRepository<User>
+{
+    public UserRepository(DbContext dbContext, IObjectVersioningRepository versioningRepo) 
+        : base(dbContext, versioningRepo)
+    {
+    }
+}
+
+// Usage - DatabaseColumnTypes automatically handles PostgreSQL types
+// PostgreSQL types: varchar, integer, bigint, boolean, uuid, timestamp, bytea, etc.
+// SQL Server types: nvarchar, int, bigint, bit, uniqueidentifier, datetime2, varbinary, etc.
+
+using Chrominsky.Utils.Enums;
+
+// Example: Check if a data type is a text type
+string postgresType = "character varying";
+string group = DatabaseColumnTypes.GetGroup(postgresType); // Returns "Text"
+
+// Works with both PostgreSQL and SQL Server types
+string sqlServerType = "nvarchar";
+string sqlGroup = DatabaseColumnTypes.GetGroup(sqlServerType); // Returns "Text"
+```
+
 ## 📋 Requirements
 
 - **.NET 8.0** or newer
 - **Entity Framework Core 8.0+** (for database functionality)
+- **Npgsql.EntityFrameworkCore.PostgreSQL 8.0+** (optional, for PostgreSQL support)
 - **StackExchange.Redis 2.7+** (for Redis cache)
 - **BCrypt.Net-Next 4.0+** (for password hashing)
 
@@ -292,7 +339,12 @@ if (tableColumns != null)
 
 Full change history available in [CHANGELOG.md](Chrominsky.Utils/CHANGELOG.md).
 
-### Latest Changes (1.2.2 - 2025-03-13)
+### Latest Changes (1.3.0 - 2025-03-14)
+- Added PostgreSQL support to `DatabaseColumnTypes`
+- Support for PostgreSQL data types: varchar, character varying, integer, bigint, boolean, uuid, timestamp, bytea, and more
+- New unit tests for PostgreSQL type mapping
+
+### Version 1.2.2
 - Added `DatabaseColumnTypes` - enum class to handle different database column types
 
 ### Version 1.2.0
