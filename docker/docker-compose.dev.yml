@@ -1,0 +1,39 @@
+version: '3.8'
+
+# Simplified docker-compose for development
+# Only includes essential services: Redis, PostgreSQL
+# Run with: docker-compose -f docker/docker-compose.dev.yml up -d
+
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: chrominsky-redis-dev
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-dev-data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - dev-network
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: chrominsky-postgres-dev
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+      POSTGRES_DB: chrominsky_db
+    volumes:
+      - postgres-dev-data:/var/lib/postgresql/data
+    networks:
+      - dev-network
+
+volumes:
+  redis-dev-data:
+  postgres-dev-data:
+
+networks:
+  dev-network:
+    driver: bridge

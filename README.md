@@ -9,6 +9,7 @@
 
 - [Features](#-features)
 - [Installation](#-installation)
+- [Docker Setup](#-docker-setup)
 - [Usage](#-usage)
   - [Base Repository with Versioning](#base-repository-with-versioning)
   - [Redis Cache](#redis-cache)
@@ -72,6 +73,48 @@ Or add directly to your `.csproj` file:
 ```xml
 <PackageReference Include="Chrominsky.Utils" Version="1.3.0" />
 ```
+
+## 🐳 Docker Setup
+
+Get started quickly with Docker! This repository includes ready-to-use Docker configurations for Redis, PostgreSQL, SQL Server, and .NET applications.
+
+### Quick Start
+
+```bash
+# Start all services (Redis, PostgreSQL, SQL Server)
+docker-compose up -d
+
+# Start only Redis and PostgreSQL (lightweight)
+docker-compose -f docker/docker-compose.dev.yml up -d
+
+# Stop all services
+docker-compose down
+```
+
+### Available Services
+
+- **Redis** (Port 6379) - For `RedisCacheRepository`
+- **PostgreSQL** (Port 5432) - Database with full support for `BaseDatabaseRepository`
+- **SQL Server** (Port 1433) - Azure SQL compatible for local development
+
+### Connection Strings
+
+**PostgreSQL:**
+```
+Host=localhost;Port=5432;Database=chrominsky_db;Username=postgres;Password=postgres123
+```
+
+**SQL Server:**
+```
+Server=localhost,1433;Database=chrominsky_db;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True
+```
+
+**Redis:**
+```
+localhost:6379
+```
+
+📚 **Full Docker Documentation**: See [docker/README.md](docker/README.md) for detailed configuration, examples, and troubleshooting.
 
 ## 🚀 Usage
 
