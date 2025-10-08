@@ -15,7 +15,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   - Database initialization scripts for PostgreSQL and SQL Server
   - Comprehensive Docker documentation in `docker/README.md`
 
-## [1.3.0] - 2025-03-14
+## [1.3.0] - 2025-10-08
 ### Added
 - PostgreSQL support for `DatabaseColumnTypes` - added PostgreSQL data types (varchar, character varying, integer, bigint, boolean, uuid, timestamp, bytea, etc.)
 - Unit tests for PostgreSQL data type mapping in `DatabaseColumnTypesTests`
