@@ -1,0 +1,98 @@
+version: '3.8'
+
+# Full docker-compose with automatic database initialization
+# This includes all services with init scripts for databases
+# Run with: docker-compose -f docker/docker-compose.full.yml up -d
+
+services:
+  # Redis service for caching
+  redis:
+    image: redis:7-alpine
+    container_name: chrominsky-redis-full
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-full-data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    networks:
+      - chrominsky-full-network
+
+  # PostgreSQL database with automatic initialization
+  postgres:
+    image: postgres:16-alpine
+    container_name: chrominsky-postgres-full
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+      POSTGRES_DB: chrominsky_db
+    volumes:
+      - postgres-full-data:/var/lib/postgresql/data
+      - ./init-scripts/init-postgres.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    networks:
+      - chrominsky-full-network
+
+  # SQL Server with initialization helper
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: chrominsky-sqlserver-full
+    ports:
+      - "1433:1433"
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "YourStrong!Passw0rd"
+      MSSQL_PID: "Developer"
+    volumes:
+      - sqlserver-full-data:/var/opt/mssql
+      - ./init-scripts/init-sqlserver.sql:/tmp/init-sqlserver.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P YourStrong!Passw0rd -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - chrominsky-full-network
+
+  # SQL Server initialization helper
+  # This service waits for SQL Server to be ready and then runs the init script
+  sqlserver-init:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: chrominsky-sqlserver-init
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    volumes:
+      - ./init-scripts/init-sqlserver.sql:/tmp/init.sql:ro
+    command: >
+      bash -c "
+      echo 'Waiting for SQL Server to be ready...';
+      sleep 10;
+      echo 'Creating database...';
+      /opt/mssql-tools/bin/sqlcmd -S sqlserver -U sa -P YourStrong!Passw0rd -Q 'CREATE DATABASE chrominsky_db' || true;
+      echo 'Running initialization script...';
+      /opt/mssql-tools/bin/sqlcmd -S sqlserver -U sa -P YourStrong!Passw0rd -d chrominsky_db -i /tmp/init.sql;
+      echo 'SQL Server initialization completed.';
+      "
+    networks:
+      - chrominsky-full-network
+    restart: "no"
+
+volumes:
+  redis-full-data:
+  postgres-full-data:
+  sqlserver-full-data:
+
+networks:
+  chrominsky-full-network:
+    driver: bridge
