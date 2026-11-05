@@ -5,7 +5,19 @@ All notable changes to this project will be documented in this file.
 This format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.3.1] - 2025-10-08
+## [1.3.1] - 2026-11-05
+### Security
+- Fixed transitive vulnerability GHSA-qj66-m88j-hmgj (High) in `Microsoft.Extensions.Caching.Memory` 8.0.0 by updating `Microsoft.EntityFrameworkCore`
+- Fixed transitive vulnerabilities GHSA-7jgj-8wvc-jh57 (`System.Net.Http` 4.3.0) and GHSA-cmhx-cq75-c4mj (`System.Text.RegularExpressions` 4.3.0) in test project by updating test dependencies
+
+### Changed
+- `Microsoft.EntityFrameworkCore` 8.0.6 -> 8.0.33
+- `StackExchange.Redis` 2.7.33 -> 2.13.23
+- `BCrypt.Net-Next` 4.0.3 -> 4.2.0
+- `Newtonsoft.Json` 13.0.3 -> 13.0.4
+- `RedisCacheRepository.SetAsync` - explicit `When.Always` to resolve overload ambiguity introduced by `StackExchange.Redis` 2.13 (no behavior change)
+- Test dependencies: `Microsoft.EntityFrameworkCore.InMemory` 8.0.33, `Microsoft.NET.Test.Sdk` 18.11.0, `xunit` 2.9.3, `xunit.runner.visualstudio` 3.1.5, `Moq` 4.21.0, `coverlet.collector` 6.0.4
+
 ### Added
 - Docker support with sample configurations
   - `docker-compose.yml` - orchestrates Redis, PostgreSQL, and SQL Server

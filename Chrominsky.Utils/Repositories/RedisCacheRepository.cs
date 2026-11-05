@@ -37,7 +37,7 @@ public class RedisCacheRepository : ICacheRepository
     public async Task SetAsync<T>(string key, T value, TimeSpan? expiry = null)
     {
         var serializedValue = JsonSerializer.Serialize(value);
-        await _database.StringSetAsync(key, serializedValue, expiry);
+        await _database.StringSetAsync(key, serializedValue, expiry, When.Always);
     }
 
     /// <inheritdoc />

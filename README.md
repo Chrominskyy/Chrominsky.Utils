@@ -71,7 +71,7 @@ dotnet add package Chrominsky.Utils
 Or add directly to your `.csproj` file:
 
 ```xml
-<PackageReference Include="Chrominsky.Utils" Version="1.3.0" />
+<PackageReference Include="Chrominsky.Utils" Version="1.3.1" />
 ```
 
 ## 🐳 Docker Setup
@@ -382,7 +382,13 @@ string sqlGroup = DatabaseColumnTypes.GetGroup(sqlServerType); // Returns "Text"
 
 Full change history available in [CHANGELOG.md](Chrominsky.Utils/CHANGELOG.md).
 
-### Latest Changes (1.3.0 - 2025-03-14)
+### Latest Changes (1.3.1 - 2026-11-05)
+- Dependency updates; fixes transitive vulnerability GHSA-qj66-m88j-hmgj (`Microsoft.Extensions.Caching.Memory`)
+- `Microsoft.EntityFrameworkCore` 8.0.33, `StackExchange.Redis` 2.13.23, `BCrypt.Net-Next` 4.2.0, `Newtonsoft.Json` 13.0.4
+- Docker sample configurations for Redis, PostgreSQL and SQL Server
+
+### Version 1.3.0
+
 - Added PostgreSQL support to `DatabaseColumnTypes`
 - Support for PostgreSQL data types: varchar, character varying, integer, bigint, boolean, uuid, timestamp, bytea, and more
 - New unit tests for PostgreSQL type mapping
